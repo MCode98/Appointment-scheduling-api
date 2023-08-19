@@ -6,8 +6,11 @@ export class Admin {
     @PrimaryGeneratedColumn()
     id: number;
   
-    @Column()
+    @Column({default: null})
     user_name: string;
+
+    @Column()
+    email: string;
 
     @Column()
     @Exclude()
