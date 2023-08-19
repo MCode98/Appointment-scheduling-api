@@ -120,7 +120,7 @@ export class AuthenticationService {
                 { email: user.email, role: role}
             ),
             this.signToken(user.id, this.jwtConfiguration.refreshTokenTtl, {
-                refreshTokenId,
+                refreshTokenId, role: role
             })
         ]);
 
