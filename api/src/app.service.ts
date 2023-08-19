@@ -3,6 +3,6 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class AppService {
   getHello(): string {
-    return 'Hello Bumble bee API!';
+    return 'Appointment Sheduling API is Up!';
   }
 }

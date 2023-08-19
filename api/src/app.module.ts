@@ -14,18 +14,22 @@ import { AvailableTimesModule } from './available_times/available_times.module';
 import { AppointmentsModule } from './appointments/appointments.module';
 import { AvailableTime } from './available_times/entities/available_time.entity';
 import { Appointment } from './appointments/entities/appointment.entity';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       logging: true,
       type: 'mysql',
-      host: 'localhost',
-      port: 3307,
-      username: 'root',
-      password: 'root',
-      database: 'Appointment_scheduling',
-      synchronize: true,
+      host: process.env.DB_HOST,
+      port: +process.env.DB_PORT,
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      synchronize: process.env.DB_NAME && process.env.DB_NAME === 'sync'
+      ? true
+      : false,
       entities: [Admin,Consultant,JobSeeker,JobType,AvailableTime,Appointment],
     }),
     AdminsModule,
