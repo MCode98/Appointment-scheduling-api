@@ -45,6 +45,7 @@ export class AuthenticationService {
             }
             throw err;
         }
+        return ('success');
     }
 
     async consultantSignUp(signUpDto: ConsultantSignUpDto) {
@@ -63,6 +64,7 @@ export class AuthenticationService {
             }
             throw err;
         }
+        return ('success');
     }
 
     async jobSeekerSignUp(signUpDto: JobSeekerSignUpDto){
@@ -80,6 +82,7 @@ export class AuthenticationService {
             }
             throw err;
         }
+        return ('success');
     }
 
     async signIn(signInDto: SignInDto, role: string) {
