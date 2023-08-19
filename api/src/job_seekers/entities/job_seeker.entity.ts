@@ -13,9 +13,6 @@ export class JobSeeker {
     @Column()
     age: number;
 
-    @ManyToOne(() => JobType, (job_type) => job_type.type)
-    job_type: JobType;
-
     @OneToMany(() => Appointment, (appointment) => appointment.job_seeker)
     appointments: Appointment[];
 }

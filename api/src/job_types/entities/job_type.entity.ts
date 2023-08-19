@@ -12,7 +12,4 @@ export class JobType {
 
     @OneToMany(() => Consultant, (consultant) => consultant.job_type)
     consultants: Consultant[];
-
-    @OneToMany(() => JobSeeker, (job_seeker) => job_seeker.job_type)
-    job_seekers: JobSeeker[];
 }
