@@ -9,7 +9,7 @@ export class Admin {
     @Column({default: null})
     user_name: string;
 
-    @Column()
+    @Column({ unique: true })
     email: string;
 
     @Column()
