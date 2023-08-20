@@ -6,10 +6,10 @@ export class AvailableTime {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: 'timestamp' })
     start_time: Date;
 
-    @Column()
+    @Column({ type: 'timestamp' })
     end_time: Date;
 
     @Column()
