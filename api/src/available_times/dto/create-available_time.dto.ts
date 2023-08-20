@@ -1,4 +1,4 @@
-import { IsDate, IsDateString, IsNotEmpty, MinLength } from "class-validator";
+import { IsDateString, IsNotEmpty } from "class-validator";
 
 export class CreateAvailableTimeDto {
 

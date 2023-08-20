@@ -12,7 +12,7 @@ export class JobSeeker {
     @Column()
     age: number;
 
-    @Column()
+    @Column({ unique: true })
     email: string;
 
     @Column()

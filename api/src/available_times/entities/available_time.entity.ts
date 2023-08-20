@@ -1,5 +1,6 @@
+import { Appointment } from "src/appointments/entities/appointment.entity";
 import { Consultant } from "src/consultants/entities/consultant.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('available_time')
 export class AvailableTime {
@@ -17,4 +18,7 @@ export class AvailableTime {
 
     @ManyToOne(() => Consultant, (consultant) => consultant.id)
     consultant: Consultant;
+
+    @OneToOne(() => Appointment, appointment => appointment.availableTime, { nullable: true })
+    appointment: Appointment;
 }
