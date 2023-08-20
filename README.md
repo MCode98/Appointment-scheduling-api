@@ -1,4 +1,4 @@
-# Bumble-bee-api
+# Appointment-scheduling-api
 nest-api for the Bumble bee project.
 
 ## Prerequisites#

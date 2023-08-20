@@ -52,7 +52,7 @@ export class AuthenticationController {
     }
 
     @HttpCode(HttpStatus.OK)
-    @Post('refresh-tokens')
+    @Post('token-refresh')
     refreshTokens(@Body() refreshTokenDto: RefreshTokenDto) {
         return this.authService.refreshTokens(refreshTokenDto);
     }
