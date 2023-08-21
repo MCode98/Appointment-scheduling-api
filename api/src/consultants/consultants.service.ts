@@ -26,7 +26,9 @@ export class ConsultantsService {
           email: true,
           country: true,
           job_type: true,
-          mobile: true
+          mobile: true,
+          address: true,
+          description: true
         }
       });
       return consultants;
@@ -48,7 +50,9 @@ export class ConsultantsService {
           email: true,
           country: true,
           job_type: true,
-          mobile: true
+          mobile: true,
+          address: true,
+          description: true
         }
       });
       if (!consultant) throw new NotFoundException('Consultant Not Found!');

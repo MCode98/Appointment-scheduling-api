@@ -17,8 +17,11 @@ export class JobSeekersController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.jobSeekersService.findOne(+id);
+  findOne(
+    @Param('id') id: string,
+    @Request() req: any
+    ) {
+    return this.jobSeekersService.findOne(+id, req);
   }
 
   @Patch(':id')

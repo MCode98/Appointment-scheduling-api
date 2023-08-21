@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateJobSeekerDto } from './dto/update-job_seeker.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JobSeeker } from './entities/job_seeker.entity';
@@ -33,8 +33,32 @@ export class JobSeekersService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} jobSeeker`;
+  async findOne(id: number, req: any) {
+    try
+    {
+      if( (req.user.role == 'job_seeker' && req.user.sub == id) || req.user.role == 'admin'){
+        const job_seeker = await this.jobSeekerRepo.findOne({
+          where: { id: id},
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            mobile: true,
+            age: true
+          }
+        });
+        if (!job_seeker) throw new NotFoundException('Job Seeker Not Found!');
+        return job_seeker;
+      }
+      else
+      {
+        throw new BadRequestException('Invalid Request!');
+      }
+    }
+    catch(err)
+    {
+      throw err;
+    }
   }
 
   update(id: number, updateJobSeekerDto: UpdateJobSeekerDto) {
