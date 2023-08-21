@@ -6,6 +6,7 @@ import { AvailableTime } from 'src/available_times/entities/available_time.entit
 import { Repository } from 'typeorm';
 import { Appointment } from './entities/appointment.entity';
 import { JobSeeker } from 'src/job_seekers/entities/job_seeker.entity';
+import { format } from 'date-fns';
 
 @Injectable()
 export class AppointmentsService {
@@ -48,8 +49,74 @@ export class AppointmentsService {
     }
   }
 
-  findAll() {
-    return `This action returns all appointments`;
+  async findAll(req: any) {
+    try{
+      let appointments: any;
+      if (req.user.role == 'admin'){
+        appointments = await this.appointmentRepo.find({
+          order: { id: 'DESC' },
+          relations: {
+            availableTime: {
+              consultant: true
+            },
+            job_seeker: true
+          }
+        });
+      }
+      else if(req.user.role == 'consultant'){
+        appointments = await this.appointmentRepo.find({
+          order: { id: 'DESC' },
+          relations: {
+            availableTime: {
+              consultant: true
+            },
+            job_seeker: true
+          },
+          where: {
+            availableTime: {
+              consultant: {
+                id: req.user.sub
+              }
+            }
+          }
+        });
+      }
+      else if (req.user.role == 'job_seeker'){
+        appointments = await this.appointmentRepo.find({
+          order: { id: 'DESC' },
+          relations: {
+            availableTime: {
+              consultant: true
+            },
+            job_seeker: true
+          },
+          where: {
+            job_seeker: {
+              id: req.user.sub
+            }
+          }
+        });
+      }
+      let appointmentList = [];
+      for (const appoinment of appointments) {
+        const dateTime = await this.setDateTime(
+          appoinment.availableTime.start_time,
+          appoinment.availableTime.end_time
+        );
+        let element = {
+          id: appoinment.id,
+          consultantName: appoinment.availableTime.consultant.name,
+          jobSeekerName: appoinment.job_seeker.name,
+          dateTime: dateTime,
+          jobType: appoinment.availableTime.consultant.job_type
+        }
+        appointmentList.push(element);
+      }
+      return appointmentList;
+
+    }catch (err){
+      throw err;
+    }
   }
 
   findOne(id: number) {
@@ -62,5 +129,19 @@ export class AppointmentsService {
 
   remove(id: number) {
     return `This action removes a #${id} appointment`;
+  }
+
+  async setDateTime(startTime: Date, endTime: Date){
+    try
+    {
+      const start = format(startTime, "MMM dd yyyy HH:mm:ss");
+      const end = format(endTime, "HH:mm:ss");
+      return (start+' - '+end);
+    }
+    catch(err)
+    {
+      throw err;
+    }
+
   }
 }
