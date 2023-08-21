@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateAvailableTimeDto } from './dto/create-available_time.dto';
 import { UpdateAvailableTimeDto } from './dto/update-available_time.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -109,8 +109,32 @@ export class AvailableTimesService {
     return `This action updates a #${id} availableTime`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} availableTime`;
+  async remove(id: number, req: any) {
+    try
+    {
+      const time = await this.timeRepo.findOne({
+        where: {id: id},
+        relations: {consultant: true}
+      });
+      if (!time) throw new NotFoundException('Time not found');
+      if(time.consultant.id == req.user.sub && req.user.role == 'consultant'){
+        await this.timeRepo.remove(time);
+        return ('Successfully deleted');
+      }
+      else if (req.user.role == 'consultant')
+      {
+        await this.timeRepo.remove(time);
+        return ('Successfully deleted');
+      }
+      else
+      {
+        throw new ForbiddenException('Access Denied!');
+      }
+    }
+    catch(err)
+    {
+      throw err;
+    }
   }
 
   async setDateTime(startTime: Date, endTime: Date){
