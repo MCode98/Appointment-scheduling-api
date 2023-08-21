@@ -168,6 +168,49 @@ export class AppointmentsService {
     }
   }
 
+  async statusChange(id: number, updateAppointmentDto: UpdateAppointmentDto, req: any){
+    try
+    {
+      const appoinment = await this.appointmentRepo.findOne({
+        where: {id: id},
+        relations: {
+          availableTime: {
+            consultant: true
+          },
+          job_seeker: true
+        }
+      });
+      if (!appoinment) throw new NotFoundException('Time not found');
+
+      if(appoinment.availableTime.consultant.id == req.user.sub && req.user.role == 'consultant')
+      {
+        appoinment.status = updateAppointmentDto.status;
+        await this.appointmentRepo.save(appoinment);
+        return ('Status successfully updated');
+      }
+      else if(appoinment.job_seeker.id == req.user.sub && req.user.role == 'job_seeker')
+      {
+        appoinment.status = updateAppointmentDto.status;
+        await this.appointmentRepo.save(appoinment);
+        return ('Status successfully updated');
+      }
+      else if (req.user.role == 'admin')
+      {
+        appoinment.status = updateAppointmentDto.status;
+        await this.appointmentRepo.save(appoinment);
+        return ('Status successfully updated');
+      }
+      else
+      {
+        throw new ForbiddenException('Access Denied!');
+      }
+    }
+    catch(err)
+    {
+      throw err;
+    }
+  }
+
   async setDateTime(startTime: Date, endTime: Date){
     try
     {
