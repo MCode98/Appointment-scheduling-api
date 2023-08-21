@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Request, Query } from '@nestjs/common';
 import { ConsultantsService } from './consultants.service';
 import { UpdateConsultantDto } from './dto/update-consultant.dto';
 
@@ -7,13 +7,20 @@ export class ConsultantsController {
   constructor(private readonly consultantsService: ConsultantsService) {}
 
   @Get()
-  findAll() {
-    return this.consultantsService.findAll();
+  findAll(
+    @Request() req: any,
+    @Query('job_type') job_type: string,
+    @Query('country') country: string,
+  ) {
+    return this.consultantsService.findAll(req, job_type, country);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.consultantsService.findOne(+id);
+  findOne(
+    @Request() req: any,
+    @Param('id') id: string
+    ) {
+    return this.consultantsService.findOne(req,+id);
   }
 
   @Patch(':id')
