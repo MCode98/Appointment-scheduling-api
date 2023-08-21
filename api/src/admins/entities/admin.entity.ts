@@ -12,6 +12,9 @@ export class Admin {
     @Column({ unique: true })
     email: string;
 
+    @Column({default: null})
+    mobile: number;
+
     @Column()
     @Exclude()
     password: string;

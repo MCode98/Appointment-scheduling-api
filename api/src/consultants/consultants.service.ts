@@ -25,7 +25,8 @@ export class ConsultantsService {
           name: true,
           email: true,
           country: true,
-          job_type: true
+          job_type: true,
+          mobile: true
         }
       });
       return consultants;
@@ -41,15 +42,13 @@ export class ConsultantsService {
     {
       const consultant = await this.consultantRepo.findOne({
         where: { id: id},
-        // relations: {
-        //   available_times: true
-        // },
         select: {
           id: true,
           name: true,
           email: true,
           country: true,
-          job_type: true
+          job_type: true,
+          mobile: true
         }
       });
       if (!consultant) throw new NotFoundException('Consultant Not Found!');

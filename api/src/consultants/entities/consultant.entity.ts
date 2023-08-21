@@ -13,11 +13,20 @@ export class Consultant {
     @Column({ unique: true })
     email: string;
 
+    @Column({default: null})
+    mobile: number;
+
+    @Column('text', { default: null })
+    address: string;
+
+    @Column('text', { default: null })
+    description: string;
+
     @Column()
     @Exclude()
     password: string;
 
-    @Column()
+    @Column({ default: null })
     country: string;
 
     @Column()
