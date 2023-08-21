@@ -1,10 +1,36 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { UpdateJobSeekerDto } from './dto/update-job_seeker.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { JobSeeker } from './entities/job_seeker.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class JobSeekersService {
-  findAll() {
-    return `This action returns all jobSeekers`;
+  constructor(
+    @InjectRepository(JobSeeker)
+    private jobSeekerRepo: Repository<JobSeeker>
+  ) { }
+
+  async findAll(req: any) {
+    try
+    {
+      if (req.user.role != 'admin') throw new ForbiddenException('Access denied!');
+      const job_seekers = await this.jobSeekerRepo.find({
+        order: { id: 'DESC'},
+        select: {
+          id: true,
+          name: true,
+          age: true,
+          email: true,
+          mobile: true
+        }
+      });
+      return job_seekers;
+    }
+    catch(err)
+    {
+      throw err;
+    }
   }
 
   findOne(id: number) {

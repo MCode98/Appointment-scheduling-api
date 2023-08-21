@@ -1,7 +1,10 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Request, Query } from '@nestjs/common';
 import { ConsultantsService } from './consultants.service';
 import { UpdateConsultantDto } from './dto/update-consultant.dto';
+import { Auth } from 'src/iam/authentication/decorators/auth.decorator';
+import { AuthType } from 'src/iam/authentication/enums/auth-type.enums';
 
+@Auth(AuthType.Bearer)
 @Controller('consultants')
 export class ConsultantsController {
   constructor(private readonly consultantsService: ConsultantsService) {}
