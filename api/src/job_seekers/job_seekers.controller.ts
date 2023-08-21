@@ -27,7 +27,10 @@ export class JobSeekersController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.jobSeekersService.remove(+id);
+  remove(
+    @Param('id') id: string,
+    @Request() req: any
+    ) {
+    return this.jobSeekersService.remove(req, +id);
   }
 }

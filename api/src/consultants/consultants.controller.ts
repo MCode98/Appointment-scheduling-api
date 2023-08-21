@@ -32,7 +32,10 @@ export class ConsultantsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.consultantsService.remove(+id);
+  remove(
+    @Request() req: any,
+    @Param('id') id: string
+    ) {
+    return this.consultantsService.remove(req, +id);
   }
 }

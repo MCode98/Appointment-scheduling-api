@@ -41,7 +41,17 @@ export class JobSeekersService {
     return `This action updates a #${id} jobSeeker`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} jobSeeker`;
+  async remove(req: any, id: number) {
+    try
+    {
+      if (req.user.role != 'admin') throw new ForbiddenException('Access Denied');
+      const job_seeker = await this.jobSeekerRepo.findOneBy({id: id});
+      await this.jobSeekerRepo.remove(job_seeker);
+      return ('successfully deleted.!');
+    }
+    catch(err)
+    {
+      throw err;
+    }
   }
 }

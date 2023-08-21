@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateConsultantDto } from './dto/update-consultant.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Consultant } from './entities/consultant.entity';
@@ -64,7 +64,17 @@ export class ConsultantsService {
     return `This action updates a #${id} consultant`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} consultant`;
+  async remove(req: any, id: number) {
+    try
+    {
+      if (req.user.role != 'admin') throw new ForbiddenException('Access Denied');
+      const consultant = await this.consultantRepo.findOneBy({id: id});
+      await this.consultantRepo.remove(consultant);
+      return ('successfully deleted.!');
+    }
+    catch(err)
+    {
+      throw err;
+    }
   }
 }
