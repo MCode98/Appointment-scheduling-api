@@ -18,9 +18,11 @@ export class AppointmentsController {
     return this.appointmentsService.create(req, createAppointmentDto);
   }
 
-  @Get()
-  findAll() {
-    return this.appointmentsService.findAll();
+  @Get('all')
+  findAll(
+    @Request() req: any,
+  ) {
+    return this.appointmentsService.findAll(req);
   }
 
   @Get(':id')
