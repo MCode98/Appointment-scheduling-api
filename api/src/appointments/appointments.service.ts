@@ -108,7 +108,8 @@ export class AppointmentsService {
           consultantName: appoinment.availableTime.consultant.name,
           jobSeekerName: appoinment.job_seeker.name,
           dateTime: dateTime,
-          jobType: appoinment.availableTime.consultant.job_type
+          jobType: appoinment.availableTime.consultant.job_type,
+          status: appoinment.status
         }
         appointmentList.push(element);
       }
