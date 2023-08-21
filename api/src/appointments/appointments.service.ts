@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -128,8 +128,44 @@ export class AppointmentsService {
     return `This action updates a #${id} appointment`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} appointment`;
+  async remove(id: number, req: any) {
+    try
+    {
+      const appoinment = await this.appointmentRepo.findOne({
+        where: {id: id},
+        relations: {
+          availableTime: {
+            consultant: true
+          },
+          job_seeker: true
+        }
+      });
+      if (!appoinment) throw new NotFoundException('Time not found');
+
+      if(appoinment.availableTime.consultant.id == req.user.sub && req.user.role == 'consultant')
+      {
+        await this.appointmentRepo.remove(appoinment);
+        return ('Successfully deleted');
+      }
+      else if(appoinment.job_seeker.id == req.user.sub && req.user.role == 'job_seeker')
+      {
+        await this.appointmentRepo.remove(appoinment);
+        return ('Successfully deleted');
+      }
+      else if (req.user.role == 'admin')
+      {
+        await this.appointmentRepo.remove(appoinment);
+        return ('Successfully deleted');
+      }
+      else
+      {
+        throw new ForbiddenException('Access Denied!');
+      }
+    }
+    catch(err)
+    {
+      throw err;
+    }
   }
 
   async setDateTime(startTime: Date, endTime: Date){

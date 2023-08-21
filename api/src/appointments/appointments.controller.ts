@@ -36,7 +36,10 @@ export class AppointmentsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.appointmentsService.remove(+id);
+  remove(
+    @Param('id') id: string,
+    @Request() req: any,
+    ) {
+    return this.appointmentsService.remove(+id, req);
   }
 }

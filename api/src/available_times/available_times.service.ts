@@ -113,7 +113,10 @@ export class AvailableTimesService {
     try
     {
       const time = await this.timeRepo.findOne({
-        where: {id: id},
+        where: {
+          id: id,
+          available: true
+        },
         relations: {consultant: true}
       });
       if (!time) throw new NotFoundException('Time not found');
@@ -121,7 +124,7 @@ export class AvailableTimesService {
         await this.timeRepo.remove(time);
         return ('Successfully deleted');
       }
-      else if (req.user.role == 'consultant')
+      else if (req.user.role == 'admin')
       {
         await this.timeRepo.remove(time);
         return ('Successfully deleted');
