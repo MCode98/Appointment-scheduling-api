@@ -18,9 +18,19 @@ export class AvailableTimesController {
     return this.availableTimesService.create(req, createAvailableTimeDto);
   }
 
-  @Get()
-  findAll() {
-    return this.availableTimesService.findAll();
+  @Get('list')
+  findAll(
+    @Request() req: any,
+  ) {
+    return this.availableTimesService.findAll(req);
+  }
+
+  @Get('list/:id')
+  findByConsultant(
+    @Request() req: any,
+    @Param('id') consultant_id: string
+    ) {
+    return this.availableTimesService.findByConsultant(req, +consultant_id);
   }
 
   @Get(':id')

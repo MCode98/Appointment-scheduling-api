@@ -1,10 +1,11 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateAvailableTimeDto } from './dto/create-available_time.dto';
 import { UpdateAvailableTimeDto } from './dto/update-available_time.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AvailableTime } from './entities/available_time.entity';
 import { Consultant } from 'src/consultants/entities/consultant.entity';
+import { format } from 'date-fns';
 
 @Injectable()
 export class AvailableTimesService {
@@ -16,7 +17,8 @@ export class AvailableTimesService {
   ) { }
 
   async create(req: any, createAvailableTimeDto: CreateAvailableTimeDto) {
-    try{
+    try
+    {
       if(req.user.role != 'consultant') throw new UnauthorizedException('user not a consultant.!');
       const consultant = await this.consultantRepo.findOneBy({id: req.user.sub});
       const time = new AvailableTime();
@@ -26,16 +28,79 @@ export class AvailableTimesService {
       time.consultant = consultant;
       await this.timeRepo.save(time);
       return ('success');
-
-    }catch(err){
+    }
+    catch(err)
+    {
       throw err;
     }
   }
 
-  findAll() {
-    return `This action returns all availableTimes`;
+  async findAll(req: any) {
+    try
+    {
+      if (req.user.role != 'admin') throw new BadRequestException('This user not an andmin!');
+      
+      const available_times = await this.timeRepo.find({
+        order: { id: 'DESC' },
+        relations: {consultant: true}
+      });
+
+      let timeList = [];
+      for (const time of available_times) {
+        let dateTime = await this.setDateTime(
+          time.start_time,
+          time.end_time
+        );
+        const element = {
+          id: time.id,
+          dateTime: dateTime,
+          available: time.available,
+          consultant: time.consultant
+        }
+        timeList.push(element);
+      }
+      return timeList;
+    }
+    catch(err)
+    {
+      throw err;
+    }
   }
 
+  async findByConsultant(req: any, consultant_id: number){
+    try
+    {      
+      const available_times = await this.timeRepo.find({
+        order: { id: 'DESC' },
+        relations: {consultant: true},
+        where: {
+          consultant: {
+            id: consultant_id
+          },
+          available: true
+        }
+      });
+
+      let timeList = [];
+      for (const time of available_times) {
+        let dateTime = await this.setDateTime(
+          time.start_time,
+          time.end_time
+        );
+        const element = {
+          id: time.id,
+          dateTime: dateTime,
+          available: time.available
+        }
+        timeList.push(element);
+      }
+      return timeList;
+    }
+    catch(err)
+    {
+      throw err;
+    }
+  }
   findOne(id: number) {
     return `This action returns a #${id} availableTime`;
   }
@@ -46,5 +111,19 @@ export class AvailableTimesService {
 
   remove(id: number) {
     return `This action removes a #${id} availableTime`;
+  }
+
+  async setDateTime(startTime: Date, endTime: Date){
+    try
+    {
+      const start = format(startTime, "MMM dd yyyy HH:mm:ss");
+      const end = format(endTime, "HH:mm:ss");
+      return (start+' - '+end);
+    }
+    catch(err)
+    {
+      throw err;
+    }
+
   }
 }
