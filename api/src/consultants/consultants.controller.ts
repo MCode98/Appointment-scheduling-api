@@ -1,28 +1,45 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Request, Query } from '@nestjs/common';
 import { ConsultantsService } from './consultants.service';
 import { UpdateConsultantDto } from './dto/update-consultant.dto';
+import { Auth } from 'src/iam/authentication/decorators/auth.decorator';
+import { AuthType } from 'src/iam/authentication/enums/auth-type.enums';
 
+@Auth(AuthType.Bearer)
 @Controller('consultants')
 export class ConsultantsController {
   constructor(private readonly consultantsService: ConsultantsService) {}
 
   @Get()
-  findAll() {
-    return this.consultantsService.findAll();
+  findAll(
+    @Request() req: any,
+    @Query('job_type') job_type: string,
+    @Query('country') country: string,
+  ) {
+    return this.consultantsService.findAll(req, job_type, country);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.consultantsService.findOne(+id);
+  findOne(
+    @Request() req: any,
+    @Param('id') id: string
+    ) {
+    return this.consultantsService.findOne(req,+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateConsultantDto: UpdateConsultantDto) {
-    return this.consultantsService.update(+id, updateConsultantDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateConsultantDto: UpdateConsultantDto,
+    @Request() req: any,
+    ) {
+    return this.consultantsService.update(+id, updateConsultantDto, req);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.consultantsService.remove(+id);
+  remove(
+    @Request() req: any,
+    @Param('id') id: string
+    ) {
+    return this.consultantsService.remove(req, +id);
   }
 }

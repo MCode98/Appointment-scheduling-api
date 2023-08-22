@@ -44,7 +44,10 @@ export class AvailableTimesController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.availableTimesService.remove(+id);
+  remove(
+    @Param('id') id: string,
+    @Request() req: any,
+    ) {
+    return this.availableTimesService.remove(+id, req);
   }
 }

@@ -15,6 +15,9 @@ export class JobSeeker {
     @Column({ unique: true })
     email: string;
 
+    @Column({default: null})
+    mobile: string;
+
     @Column()
     @Exclude()
     password: string;    
