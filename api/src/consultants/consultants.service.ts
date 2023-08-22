@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateConsultantDto } from './dto/update-consultant.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Consultant } from './entities/consultant.entity';
@@ -64,8 +64,25 @@ export class ConsultantsService {
     }
   }
 
-  update(id: number, updateConsultantDto: UpdateConsultantDto) {
-    return `This action updates a #${id} consultant`;
+  async update(id: number, attrs: Partial<Consultant>, req: any) {
+    try
+    {
+      if (Object.keys(attrs).length === 0) {
+        throw new BadRequestException("PAYLOAD_EMPTY");
+      }
+      const consultant = await this.findOne(req, id);
+      if (consultant.id != req.user.sub) {
+        throw new ForbiddenException("Access Denied");
+      }
+
+      Object.assign(consultant, attrs);
+      await this.consultantRepo.save(consultant);
+      return consultant;
+    }
+    catch(err)
+    {
+      throw err;
+    }
   }
 
   async remove(req: any, id: number) {

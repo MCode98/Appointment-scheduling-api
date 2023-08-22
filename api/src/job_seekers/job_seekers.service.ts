@@ -61,8 +61,25 @@ export class JobSeekersService {
     }
   }
 
-  update(id: number, updateJobSeekerDto: UpdateJobSeekerDto) {
-    return `This action updates a #${id} jobSeeker`;
+  async update(id: number, attrs: Partial<JobSeeker>, req: any) {
+    try
+    {
+      if (Object.keys(attrs).length === 0) {
+        throw new BadRequestException("PAYLOAD_EMPTY");
+      }
+      const job_seeker = await this.findOne(id, req);
+      if (job_seeker.id != req.user.sub) {
+        throw new ForbiddenException("Access Denied");
+      }
+      
+      Object.assign(job_seeker, attrs);
+      await this.jobSeekerRepo.save(job_seeker);
+      return job_seeker;
+    }
+    catch(err)
+    {
+      throw err;
+    }
   }
 
   async remove(req: any, id: number) {

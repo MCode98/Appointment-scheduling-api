@@ -25,8 +25,12 @@ export class JobSeekersController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateJobSeekerDto: UpdateJobSeekerDto) {
-    return this.jobSeekersService.update(+id, updateJobSeekerDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateJobSeekerDto: UpdateJobSeekerDto,
+    @Request() req: any
+    ) {
+    return this.jobSeekersService.update(+id, updateJobSeekerDto, req);
   }
 
   @Delete(':id')

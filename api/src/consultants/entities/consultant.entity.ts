@@ -14,7 +14,7 @@ export class Consultant {
     email: string;
 
     @Column({default: null})
-    mobile: number;
+    mobile: string;
 
     @Column('text', { default: null })
     address: string;

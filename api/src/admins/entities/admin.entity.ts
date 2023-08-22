@@ -13,7 +13,7 @@ export class Admin {
     email: string;
 
     @Column({default: null})
-    mobile: number;
+    mobile: string;
 
     @Column()
     @Exclude()

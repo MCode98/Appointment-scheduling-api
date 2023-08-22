@@ -20,8 +20,12 @@ export class AdminsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAdminDto: UpdateAdminDto) {
-    return this.adminsService.update(+id, updateAdminDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateAdminDto: UpdateAdminDto,
+    @Request() req: any
+    ) {
+    return this.adminsService.update(+id, updateAdminDto, req);
   }
 
   @Delete(':id')
