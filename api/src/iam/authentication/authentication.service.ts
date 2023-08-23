@@ -129,7 +129,7 @@ export class AuthenticationService {
             accessToken,
             refreshToken,
             id: user.id,
-            name: user.name,
+            name: (user.name) ? user.name : user.user_name,
             role: role
         };
     }
