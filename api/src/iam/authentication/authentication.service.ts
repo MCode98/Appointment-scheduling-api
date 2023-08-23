@@ -127,7 +127,10 @@ export class AuthenticationService {
         await this.refreshTokenIdsStorage.insert(user.id, refreshTokenId, role);
         return {
             accessToken,
-            refreshToken
+            refreshToken,
+            id: user.id,
+            name: user.name,
+            role: role
         };
     }
 
