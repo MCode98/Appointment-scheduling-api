@@ -3,12 +3,17 @@ import { UpdateConsultantDto } from './dto/update-consultant.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Consultant } from './entities/consultant.entity';
 import { Repository } from 'typeorm';
+import { AvailableTime } from 'src/available_times/entities/available_time.entity';
+import { AvailableTimesService } from 'src/available_times/available_times.service';
 
 @Injectable()
 export class ConsultantsService {
   constructor(
     @InjectRepository(Consultant)
-    private consultantRepo: Repository<Consultant>
+    private consultantRepo: Repository<Consultant>,
+    @InjectRepository(AvailableTime)
+    private availableTimeRepo: Repository<AvailableTime>,
+    private readonly availableTimeService: AvailableTimesService
   ) { }
 
   async findAll(req: any, job_type: string, country: string) {
@@ -90,6 +95,16 @@ export class ConsultantsService {
     {
       if (req.user.role != 'admin') throw new ForbiddenException('Access Denied');
       const consultant = await this.consultantRepo.findOneBy({id: id});
+
+      const available_times = await this.availableTimeRepo.findBy({
+        consultant: {
+          id: id
+        }
+      });
+      for (const available_time of available_times) {
+        await this.availableTimeService.remove(available_time.id, req);
+      }
+
       await this.consultantRepo.remove(consultant);
       return ('successfully deleted.!');
     }
