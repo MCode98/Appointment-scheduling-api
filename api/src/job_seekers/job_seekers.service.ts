@@ -1,14 +1,16 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { UpdateJobSeekerDto } from './dto/update-job_seeker.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JobSeeker } from './entities/job_seeker.entity';
 import { Repository } from 'typeorm';
+import { Appointment } from 'src/appointments/entities/appointment.entity';
 
 @Injectable()
 export class JobSeekersService {
   constructor(
     @InjectRepository(JobSeeker)
-    private jobSeekerRepo: Repository<JobSeeker>
+    private jobSeekerRepo: Repository<JobSeeker>,
+    @InjectRepository(Appointment)
+    private appointmentRepo: Repository<Appointment>
   ) { }
 
   async findAll(req: any) {
@@ -87,6 +89,16 @@ export class JobSeekersService {
     {
       if (req.user.role != 'admin') throw new ForbiddenException('Access Denied');
       const job_seeker = await this.jobSeekerRepo.findOneBy({id: id});
+
+      const appointments = await this.appointmentRepo.findBy({
+        job_seeker: {
+          id: id
+        }
+      });
+      for (const appointment of appointments) {
+        await this.appointmentRepo.remove(appointment);
+      }
+
       await this.jobSeekerRepo.remove(job_seeker);
       return ('successfully deleted.!');
     }
