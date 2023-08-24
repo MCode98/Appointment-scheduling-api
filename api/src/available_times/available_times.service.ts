@@ -6,6 +6,8 @@ import { Repository } from 'typeorm';
 import { AvailableTime } from './entities/available_time.entity';
 import { Consultant } from 'src/consultants/entities/consultant.entity';
 import { format } from 'date-fns';
+import { AppointmentsService } from 'src/appointments/appointments.service';
+import { Appointment } from 'src/appointments/entities/appointment.entity';
 
 @Injectable()
 export class AvailableTimesService {
@@ -13,7 +15,10 @@ export class AvailableTimesService {
     @InjectRepository(AvailableTime)
     private timeRepo: Repository<AvailableTime>,
     @InjectRepository(Consultant)
-    private consultantRepo: Repository<Consultant>
+    private consultantRepo: Repository<Consultant>,
+    @InjectRepository(Appointment)
+    private appointmentRepo: Repository<Appointment>,
+    private readonly appointmentService: AppointmentsService
   ) { }
 
   async create(req: any, createAvailableTimeDto: CreateAvailableTimeDto) {
@@ -114,18 +119,29 @@ export class AvailableTimesService {
     {
       const time = await this.timeRepo.findOne({
         where: {
-          id: id,
-          available: true
+          id: id
         },
         relations: {consultant: true}
       });
       if (!time) throw new NotFoundException('Time not found');
+
+      const appoinment = await this.appointmentRepo.findOneBy({
+        availableTime: {
+          id: time.id
+        }
+      });
       if(time.consultant.id == req.user.sub && req.user.role == 'consultant'){
+        if(appoinment){
+          await this.appointmentService.remove(appoinment.id, req);
+        }
         await this.timeRepo.remove(time);
         return ('Successfully deleted');
       }
       else if (req.user.role == 'admin')
       {
+        if(appoinment){
+          await this.appointmentService.remove(appoinment.id, req);
+        }
         await this.timeRepo.remove(time);
         return ('Successfully deleted');
       }
