@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Request } from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param, Delete, Request } from '@nestjs/common';
 import { JobSeekersService } from './job_seekers.service';
 import { UpdateJobSeekerDto } from './dto/update-job_seeker.dto';
 import { Auth } from 'src/iam/authentication/decorators/auth.decorator';

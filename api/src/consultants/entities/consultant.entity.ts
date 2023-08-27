@@ -1,5 +1,5 @@
 import { AvailableTime } from "src/available_times/entities/available_time.entity";
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Exclude } from 'class-transformer';
 
 @Entity('consultant')

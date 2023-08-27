@@ -6,11 +6,6 @@ import { UpdateAdminDto } from './dto/update-admin.dto';
 export class AdminsController {
   constructor(private readonly adminsService: AdminsService) {}
 
-  @Get()
-  findAll() {
-    return this.adminsService.findAll();
-  }
-
   @Get(':id')
   findOne(
     @Param('id') id: string,
@@ -26,10 +21,5 @@ export class AdminsController {
     @Request() req: any
     ) {
     return this.adminsService.update(+id, updateAdminDto, req);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.adminsService.remove(+id);
   }
 }

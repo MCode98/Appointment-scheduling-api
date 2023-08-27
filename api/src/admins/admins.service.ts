@@ -10,10 +10,6 @@ export class AdminsService {
     private adminRepo: Repository<Admin>
   ) { }
 
-  findAll() {
-    return `This action returns all admins`;
-  }
-
   async findOne(id: number, req: any) {
     try
     {
@@ -55,9 +51,5 @@ export class AdminsService {
     {
       throw err;
     }
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} admin`;
   }
 }
