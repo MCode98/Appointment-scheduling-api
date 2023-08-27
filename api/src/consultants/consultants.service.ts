@@ -1,5 +1,4 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { UpdateConsultantDto } from './dto/update-consultant.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Consultant } from './entities/consultant.entity';
 import { Repository } from 'typeorm';

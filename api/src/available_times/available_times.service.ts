@@ -1,6 +1,5 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateAvailableTimeDto } from './dto/create-available_time.dto';
-import { UpdateAvailableTimeDto } from './dto/update-available_time.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AvailableTime } from './entities/available_time.entity';
@@ -105,13 +104,6 @@ export class AvailableTimesService {
     {
       throw err;
     }
-  }
-  findOne(id: number) {
-    return `This action returns a #${id} availableTime`;
-  }
-
-  update(id: number, updateAvailableTimeDto: UpdateAvailableTimeDto) {
-    return `This action updates a #${id} availableTime`;
   }
 
   async remove(id: number, req: any) {

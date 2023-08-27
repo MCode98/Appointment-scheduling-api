@@ -25,16 +25,6 @@ export class AppointmentsController {
     return this.appointmentsService.findAll(req);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.appointmentsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAppointmentDto: UpdateAppointmentDto) {
-    return this.appointmentsService.update(+id, updateAppointmentDto);
-  }
-
   @Patch(':id/status-change')
   statusChange(
     @Param('id') id: string,

@@ -120,14 +120,6 @@ export class AppointmentsService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} appointment`;
-  }
-
-  update(id: number, updateAppointmentDto: UpdateAppointmentDto) {
-    return `This action updates a #${id} appointment`;
-  }
-
   async remove(id: number, req: any) {
     try
     {
